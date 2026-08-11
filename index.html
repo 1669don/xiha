@@ -518,10 +518,10 @@ body{
 'use strict';
 
 /* ═══════════════════════════════════════════════
-   部署时把下面的 URL 改成你的 Worker 地址：
-   例如：https://ideas-api.你的用户名.workers.dev/api/ideas
+   使用 Cloudflare Pages Functions，API 在同域名下。
+   不需要修改此行。
    ═══════════════════════════════════════════════ */
-var API_URL = 'https://YOUR-WORKER-NAME.YOUR-SUBDOMAIN.workers.dev/api/ideas';
+var API_URL = '/api/ideas';
 
 /* ========== App State ========== */
 var appState = {
