@@ -1,0 +1,20 @@
+# Cloudflare Worker 配置 — 想法记录 API
+name = "ideas-api"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+# ═══════════════════════════════════════════
+# 部署前需要设置以下 4 个密钥（Secret）：
+#
+#   npx wrangler secret put GITHUB_TOKEN
+#   npx wrangler secret put GITHUB_OWNER
+#   npx wrangler secret put GITHUB_REPO
+#   npx wrangler secret put GITHUB_PATH
+#
+# 说明：
+#   GITHUB_TOKEN — GitHub Personal Access Token（Fine-grained）
+#                   权限：Read & Write on Contents（仅限目标仓库）
+#   GITHUB_OWNER — 你的 GitHub 用户名
+#   GITHUB_REPO  — 存储数据的仓库名（如 ideas-data）
+#   GITHUB_PATH  — 数据文件路径（默认 ideas.json，可不设）
+# ═══════════════════════════════════════════

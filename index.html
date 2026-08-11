@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f4f4f2">
+<title>想法记录</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#f4f4f2;
+  --surface:#ffffff;
+  --surface-2:#faf9f7;
+  --text:#1d1d1f;
+  --text-2:#86868b;
+  --text-3:#c7c7cc;
+  --border:#e8e8e6;
+  --border-2:#f0f0ee;
+  --accent:#3a3a3c;
+  --accent-soft:#e8e8ea;
+  --danger:#d4503e;
+  --danger-soft:#fce9e6;
+  --radius:14px;
+  --radius-sm:10px;
+  --shadow:0 1px 3px rgba(0,0,0,.04),0 1px 2px rgba(0,0,0,.03);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.12);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+  --safe-top:env(safe-area-inset-top,0px);
+}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei','Helvetica Neue',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  min-height:100vh;
+  min-height:100dvh;
+  overflow-x:hidden;
+  font-feature-settings:'kern' 1;
+  -webkit-font-smoothing:antialiased;
+}
+.app{
+  max-width:480px;
+  margin:0 auto;
+  min-height:100vh;
+  min-height:100dvh;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+}
+
+/* ---------- Header ---------- */
+.header{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:rgba(244,244,242,.88);
+  backdrop-filter:saturate(180%) blur(20px);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:0.5px solid var(--border);
+  padding:calc(12px + var(--safe-top)) 20px 12px;
+}
+.header-row{display:flex;align-items:center;justify-content:space-between}
+.header-title{font-size:20px;font-weight:700;letter-spacing:-0.3px}
+.header-sub{font-size:12px;color:var(--text-2);margin-top:1px}
+.icon-btn{
+  width:36px;height:36px;
+  border:none;background:transparent;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:50%;cursor:pointer;
+  color:var(--text-2);
+  transition:background .15s;
+  -webkit-touch-callout:none;
+}
+.icon-btn:active{background:var(--accent-soft)}
+.icon-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- Main ---------- */
+.main{
+  flex:1;
+  padding:0 16px calc(96px + var(--safe-bottom));
+}
+
+/* Section */
+.section{margin-top:24px}
+.section-head{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:12px;padding:0 4px;
+}
+.section-title{
+  font-size:15px;font-weight:600;
+  color:var(--text);letter-spacing:-0.2px;
+  display:flex;align-items:center;gap:7px;
+}
+.section-dot{
+  width:7px;height:7px;border-radius:50%;
+  flex-shrink:0;
+}
+.section-dot.mine{background:#9a9a9e}
+.section-dot.friend{background:#b0a89a}
+.section-count{
+  font-size:12px;color:var(--text-3);
+  background:var(--surface);
+  padding:1px 8px;border-radius:20px;
+  font-weight:500;
+  border:0.5px solid var(--border);
+}
+.section-add{
+  margin-left:auto;
+  width:30px;height:30px;
+  border-radius:50%;
+  border:1.5px solid var(--border);
+  background:var(--surface);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  transition:all .15s;
+  color:var(--text-2);
+  flex-shrink:0;
+}
+.section-add:active{
+  background:var(--accent);color:#fff;border-color:var(--accent);
+  transform:scale(.92);
+}
+.section-add svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round}
+
+/* Idea list */
+.idea-list{display:flex;flex-direction:column;gap:8px}
+
+/* Idea card */
+.idea-card{
+  background:var(--surface);
+  border-radius:var(--radius);
+  padding:14px 16px 10px;
+  box-shadow:var(--shadow);
+  transition:opacity .25s,transform .25s;
+  animation:cardIn .3s ease both;
+  position:relative;
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.idea-card.removing{opacity:0;transform:translateX(60px)}
+.idea-text{
+  font-size:15px;line-height:1.55;
+  color:var(--text);
+  word-break:break-word;
+  white-space:pre-wrap;
+}
+.idea-note{
+  margin-top:6px;
+  font-size:13px;color:var(--text-2);
+  line-height:1.5;
+  word-break:break-word;
+  white-space:pre-wrap;
+  padding-left:8px;
+  border-left:2px solid var(--border);
+}
+.idea-foot{
+  display:flex;align-items:center;
+  margin-top:8px;padding-top:8px;
+  border-top:0.5px solid var(--border-2);
+  gap:6px;
+}
+.idea-time{
+  font-size:11px;color:var(--text-3);
+  flex:1;
+}
+.card-btn{
+  border:none;background:transparent;
+  font-size:12px;color:var(--text-2);
+  padding:4px 10px;border-radius:7px;
+  cursor:pointer;
+  transition:all .12s;
+  display:flex;align-items:center;gap:3px;
+}
+.card-btn:active{background:var(--accent-soft);color:var(--text)}
+.card-btn.danger{color:var(--danger)}
+.card-btn.danger:active{background:var(--danger-soft)}
+.card-btn.confirming{
+  background:var(--danger);color:#fff;
+  font-weight:600;
+}
+.card-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* Empty state */
+.empty{
+  text-align:center;padding:32px 16px;
+  color:var(--text-3);font-size:13px;
+}
+.empty-icon{
+  width:36px;height:36px;margin:0 auto 8px;
+  opacity:.4;
+}
+.empty-icon svg{width:100%;height:100%;stroke:var(--text-3);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.empty-hint{font-size:12px;color:var(--text-3);margin-top:4px}
+
+/* ---------- Bottom Sheet ---------- */
+.overlay{
+  position:fixed;inset:0;z-index:90;
+  background:rgba(0,0,0,.25);
+  opacity:0;pointer-events:none;
+  transition:opacity .25s;
+}
+.overlay.show{opacity:1;pointer-events:auto}
+
+.sheet{
+  position:fixed;
+  bottom:0;left:50%;
+  transform:translateX(-50%) translateY(100%);
+  width:100%;max-width:480px;
+  background:var(--surface);
+  border-radius:20px 20px 0 0;
+  z-index:100;
+  transition:transform .32s cubic-bezier(.32,.72,0,1);
+  padding:8px 20px calc(20px + var(--safe-bottom));
+  box-shadow:0 -4px 24px rgba(0,0,0,.08);
+  max-height:85vh;
+  overflow-y:auto;
+}
+.sheet.show{transform:translateX(-50%) translateY(0)}
+.sheet-handle{
+  width:36px;height:4px;
+  background:var(--text-3);opacity:.35;
+  border-radius:2px;margin:4px auto 16px;
+}
+.sheet-title{
+  font-size:16px;font-weight:600;
+  text-align:center;margin-bottom:14px;
+}
+.field{margin-bottom:12px}
+.field-label{
+  font-size:12px;color:var(--text-2);
+  margin-bottom:5px;display:block;
+  font-weight:500;
+}
+.field textarea,.field input{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:12px 14px;
+  font-size:15px;
+  font-family:inherit;
+  color:var(--text);
+  background:var(--surface-2);
+  transition:border-color .15s,background .15s;
+  resize:none;
+  line-height:1.55;
+}
+.field textarea:focus,.field input:focus{
+  outline:none;
+  border-color:var(--accent);
+  background:var(--surface);
+}
+.field textarea{min-height:80px;max-height:200px}
+.sheet-actions{
+  display:flex;gap:10px;
+  margin-top:16px;
+}
+.btn{
+  flex:1;
+  padding:13px;
+  border:none;border-radius:var(--radius-sm);
+  font-size:15px;font-weight:600;
+  cursor:pointer;
+  transition:all .12s;
+  font-family:inherit;
+}
+.btn-cancel{
+  background:var(--accent-soft);
+  color:var(--text);
+}
+.btn-cancel:active{background:#dddde0}
+.btn-save{
+  background:var(--accent);
+  color:#fff;
+}
+.btn-save:active{background:#1d1d1f;transform:scale(.98)}
+.btn-danger{
+  background:var(--danger);
+  color:#fff;
+}
+.btn-danger:active{transform:scale(.98)}
+
+/* Settings sheet items */
+.settings-item{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 0;
+  border-bottom:0.5px solid var(--border-2);
+  cursor:pointer;
+  transition:opacity .12s;
+}
+.settings-item:active{opacity:.6}
+.settings-item:last-child{border-bottom:none}
+.settings-icon{
+  width:32px;height:32px;
+  border-radius:8px;
+  background:var(--accent-soft);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.settings-icon svg{width:17px;height:17px;stroke:var(--text-2);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.settings-text{flex:1}
+.settings-label{font-size:14px;font-weight:500;color:var(--text)}
+.settings-desc{font-size:12px;color:var(--text-2);margin-top:1px}
+.settings-item.danger .settings-icon{background:var(--danger-soft)}
+.settings-item.danger .settings-icon svg{stroke:var(--danger)}
+.settings-item.danger .settings-label{color:var(--danger)}
+
+/* Confirm sheet */
+.confirm-msg{
+  text-align:center;font-size:15px;
+  color:var(--text);line-height:1.5;
+  padding:8px 0 4px;
+}
+
+/* Toast */
+.toast{
+  position:fixed;
+  bottom:calc(110px + var(--safe-bottom));
+  left:50%;transform:translateX(-50%) translateY(20px);
+  background:rgba(50,50,52,.92);
+  color:#fff;
+  font-size:13px;
+  padding:8px 18px;border-radius:20px;
+  z-index:200;
+  opacity:0;pointer-events:none;
+  transition:opacity .25s,transform .25s;
+  white-space:nowrap;
+  backdrop-filter:blur(10px);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Loading overlay */
+.loading-overlay{
+  position:fixed;inset:0;z-index:80;
+  background:var(--bg);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  transition:opacity .3s;
+}
+.loading-overlay.hide{opacity:0;pointer-events:none}
+.loading-spinner{
+  width:28px;height:28px;
+  border:2.5px solid var(--border);
+  border-top-color:var(--text-2);
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{
+  margin-top:12px;font-size:13px;color:var(--text-2);
+}
+
+/* Error banner */
+.error-banner{
+  background:#fef2f2;color:#b91c1c;
+  font-size:13px;padding:10px 16px;text-align:center;
+  border-bottom:0.5px solid #fecaca;
+  display:none;
+}
+.error-banner.show{display:block}
+.error-banner .retry-link{color:var(--danger);text-decoration:underline;cursor:pointer;margin-left:6px}
+
+/* Saved indicator */
+.saved-tag{
+  font-size:11px;color:var(--text-3);
+  opacity:0;transition:opacity .3s;
+}
+.saved-tag.show{opacity:1}
+
+/* Footer */
+.footer{
+  text-align:center;padding:20px 16px;
+  font-size:11px;color:var(--text-3);
+  line-height:1.6;
+}
+
+/* Hidden file input */
+#fileInput{display:none}
+
+/* Scrollbar hide */
+::-webkit-scrollbar{width:0;height:0;display:none}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-row">
+      <div>
+        <div class="header-title">想法记录</div>
+        <div class="header-sub" id="syncStatus">📡 加载中…</div>
+      </div>
+      <button class="icon-btn" id="settingsBtn" aria-label="设置">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Error banner -->
+  <div class="error-banner" id="errorBanner">
+    <span id="errorMsg"></span>
+    <span class="retry-link" id="retryBtn">重试</span>
+  </div>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- 第一组想法 -->
+    <section class="section" id="secMine">
+      <div class="section-head">
+        <h2 class="section-title"><span class="section-dot mine"></span>第一组想法</h2>
+        <span class="section-count" id="countMine">0</span>
+        <button class="section-add" data-owner="mine" aria-label="新增想法">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+      </div>
+      <div class="idea-list" id="listMine"></div>
+    </section>
+
+    <!-- 第二组想法 -->
+    <section class="section" id="secFriend">
+      <div class="section-head">
+        <h2 class="section-title"><span class="section-dot friend"></span>第二组想法</h2>
+        <span class="section-count" id="countFriend">0</span>
+        <button class="section-add" data-owner="friend" aria-label="新增想法">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+      </div>
+      <div class="idea-list" id="listFriend"></div>
+    </section>
+
+    <footer class="footer">
+      数据通过 GitHub 实时同步，多设备共享<br>
+      可在设置中导出备份
+    </footer>
+
+  </main>
+
+  <!-- Overlay -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Edit/Add Sheet -->
+  <div class="sheet" id="editSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="sheetTitle">新增想法</div>
+    <div class="field">
+      <label class="field-label" for="ideaInput">想法内容</label>
+      <textarea id="ideaInput" placeholder="写下你的想法…" maxlength="2000"></textarea>
+    </div>
+    <div class="field">
+      <label class="field-label" for="noteInput">备注（可选）</label>
+      <input type="text" id="noteInput" placeholder="补充说明…" maxlength="500">
+    </div>
+    <div class="sheet-actions">
+      <button class="btn btn-cancel" id="btnCancel">取消</button>
+      <button class="btn btn-save" id="btnSave">保存</button>
+    </div>
+  </div>
+
+  <!-- Settings Sheet -->
+  <div class="sheet" id="settingsSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">设置</div>
+    <div class="settings-item" id="exportBtn">
+      <div class="settings-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></div>
+      <div class="settings-text">
+        <div class="settings-label">导出备份</div>
+        <div class="settings-desc">下载所有想法数据为文件</div>
+      </div>
+    </div>
+    <div class="settings-item" id="importBtn">
+      <div class="settings-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg></div>
+      <div class="settings-text">
+        <div class="settings-label">导入备份</div>
+        <div class="settings-desc">从备份文件恢复数据</div>
+      </div>
+    </div>
+    <div class="settings-item danger" id="clearBtn">
+      <div class="settings-icon"><svg viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/></svg></div>
+      <div class="settings-text">
+        <div class="settings-label">清空全部数据</div>
+        <div class="settings-desc">删除所有想法，不可恢复</div>
+      </div>
+    </div>
+    <div class="sheet-actions">
+      <button class="btn btn-cancel" id="settingsClose">关闭</button>
+    </div>
+  </div>
+
+  <!-- Confirm Sheet -->
+  <div class="sheet" id="confirmSheet">
+    <div class="sheet-handle"></div>
+    <div class="confirm-msg" id="confirmMsg">确认删除？</div>
+    <div class="sheet-actions">
+      <button class="btn btn-cancel" id="confirmCancel">取消</button>
+      <button class="btn btn-danger" id="confirmOk">删除</button>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Loading overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">加载数据中…</div>
+  </div>
+
+  <!-- Hidden file input -->
+  <input type="file" id="fileInput" accept=".json,application/json">
+
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ═══════════════════════════════════════════════
+   部署时把下面的 URL 改成你的 Worker 地址：
+   例如：https://ideas-api.你的用户名.workers.dev/api/ideas
+   ═══════════════════════════════════════════════ */
+var API_URL = 'https://YOUR-WORKER-NAME.YOUR-SUBDOMAIN.workers.dev/api/ideas';
+
+/* ========== App State ========== */
+var appState = {
+  data: { mine: [], friend: [] },
+  sha: null,
+  syncing: false,
+  loaded: false,
+  dirty: false          // 本地有待同步的修改
+};
+
+/* ========== DOM ========== */
+var $=function(s){return document.querySelector(s)};
+var listMine=$('#listMine'),listFriend=$('#listFriend');
+var overlay=$('#overlay'),editSheet=$('#editSheet'),settingsSheet=$('#settingsSheet'),confirmSheet=$('#confirmSheet');
+var sheetTitle=$('#sheetTitle'),ideaInput=$('#ideaInput'),noteInput=$('#noteInput');
+var toast=$('#toast'),fileInput=$('#fileInput');
+var syncStatus=$('#syncStatus'),loadingOverlay=$('#loadingOverlay');
+var errorBanner=$('#errorBanner'),errorMsg=$('#errorMsg'),retryBtn=$('#retryBtn');
+
+var editState={owner:null,id:null,mode:'add'};
+var pendingConfirm=null;
+
+/* ========== API ========== */
+function apiFetch(method, body){
+  var opts={method:method,headers:{'Content-Type':'application/json'}};
+  if(body)opts.body=JSON.stringify(body);
+  return fetch(API_URL,opts).then(function(r){
+    if(!r.ok){
+      return r.json().then(function(e){
+        var err=new Error(e.error||e.message||'请求失败');
+        err.code=r.status;
+        err.isConflict=r.status===409;
+        throw err;
+      });
+    }
+    return r.json();
+  });
+}
+
+function loadFromServer(){
+  return apiFetch('GET');
+}
+
+function saveToServer(data,sha){
+  return apiFetch('POST',{data:data,sha:sha});
+}
+
+/* ========== Sync ========== */
+function setSyncStatus(text,isError){
+  syncStatus.textContent=text;
+  syncStatus.style.color=isError?'var(--danger)':'var(--text-2)';
+}
+
+function showError(msg){
+  errorMsg.textContent=msg;
+  errorBanner.classList.add('show');
+}
+function hideError(){errorBanner.classList.remove('show')}
+
+function doInitialLoad(){
+  setSyncStatus('📡 加载中…');
+  loadingOverlay.classList.remove('hide');
+  hideError();
+
+  loadFromServer().then(function(res){
+    appState.data=res.data||{mine:[],friend:[]};
+    appState.sha=res.sha;
+    appState.loaded=true;
+    appState.dirty=false;
+    loadingOverlay.classList.add('hide');
+    setSyncStatus('✓ 已同步');
+    hideError();
+    renderAll();
+  }).catch(function(err){
+    loadingOverlay.classList.add('hide');
+    setSyncStatus('✗ 加载失败',true);
+    showError('无法加载数据：'+err.message);
+    // 如果已经有过数据，保留旧的显示
+    if(appState.loaded){
+      renderAll();
+    }else{
+      // 首次加载失败，显示空状态
+      appState.data={mine:[],friend:[]};
+      renderAll();
+    }
+  });
+}
+
+function syncToServer(){
+  if(appState.syncing||!appState.dirty)return;
+  appState.syncing=true;
+  setSyncStatus('↑ 同步中…');
+
+  saveToServer(appState.data,appState.sha).then(function(res){
+    appState.sha=res.sha;
+    appState.dirty=false;
+    appState.syncing=false;
+    setSyncStatus('✓ 已同步');
+    hideError();
+  }).catch(function(err){
+    appState.syncing=false;
+    if(err.isConflict){
+      // 冲突：远程有新数据，拉取合并后重试
+      setSyncStatus('⚠ 数据冲突，正在合并…',true);
+      loadFromServer().then(function(res){
+        // 合并策略：远程 + 本地新增条目（简化合并）
+        var remote=res.data||{mine:[],friend:[]};
+        var merged={
+          mine: mergeLists(remote.mine,appState.data.mine),
+          friend: mergeLists(remote.friend,appState.data.friend)
+        };
+        appState.data=merged;
+        appState.sha=res.sha;
+        appState.dirty=true;
+        renderAll();
+        setSyncStatus('已合并，正在重试…');
+        // 重试保存
+        saveToServer(merged,res.sha).then(function(r){
+          appState.sha=r.sha;
+          appState.dirty=false;
+          appState.syncing=false;
+          setSyncStatus('✓ 已同步');
+        }).catch(function(){
+          appState.syncing=false;
+          setSyncStatus('✗ 同步失败，请刷新',true);
+          showError('同步失败，请刷新页面重试');
+        });
+      }).catch(function(){
+        appState.syncing=false;
+        setSyncStatus('✗ 同步失败',true);
+        showError('同步失败，请刷新页面');
+      });
+    }else{
+      setSyncStatus('✗ 同步失败',true);
+      showError('保存失败：'+err.message);
+    }
+  });
+}
+
+function mergeLists(remote,local){
+  var remoteMap={},result=[];
+  for(var i=0;i<remote.length;i++)remoteMap[remote[i].id]=remote[i];
+  var localIds={};
+  for(var j=0;j<local.length;j++){
+    localIds[local[j].id]=true;
+    if(!remoteMap[local[j].id]){
+      // 本地新增的条目，远程没有
+      result.push(local[j]);
+    }
+  }
+  // 远程条目
+  for(var k=0;k<remote.length;k++)result.push(remote[k]);
+  // 本地独有的（新增且远程没有的排在前面）
+  return result;
+}
+
+/* ========== Utils ========== */
+function escapeHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function formatTime(iso){
+  var d=new Date(iso);
+  var now=new Date();
+  var diff=(now-d)/1000;
+  if(diff<60)return '刚刚';
+  if(diff<3600)return Math.floor(diff/60)+'分钟前';
+  if(diff<86400)return Math.floor(diff/3600)+'小时前';
+  if(diff<172800)return '昨天';
+  if(diff<604800)return Math.floor(diff/86400)+'天前';
+  var m=d.getMonth()+1,day=d.getDate();
+  var hh=String(d.getHours()).padStart(2,'0');
+  var mm=String(d.getMinutes()).padStart(2,'0');
+  return m+'月'+day+'日 '+hh+':'+mm;
+}
+function genId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+function showToast(msg){
+  toast.textContent=msg;
+  toast.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t=setTimeout(function(){toast.classList.remove('show')},1800);
+}
+function autoResize(el){
+  el.style.height='auto';
+  el.style.height=Math.min(el.scrollHeight,200)+'px';
+}
+
+/* ========== Render ========== */
+function renderSection(owner){
+  var list=owner==='mine'?listMine:listFriend;
+  var countEl=owner==='mine'?$('#countMine'):$('#countFriend');
+  var data=appState.data[owner]||[];
+  countEl.textContent=data.length;
+  if(data.length===0){
+    list.innerHTML='<div class="empty">'+
+      '<div class="empty-icon"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z" /></svg></div>'+
+      '<div>'+(owner==='mine'?'第一组还没有想法，点击 + 添加':'第二组还没有分享想法')+'</div>'+
+      '<div class="empty-hint">灵感总在不经意间出现</div>'+
+    '</div>';
+    return;
+  }
+  var html='';
+  for(var i=0;i<data.length;i++){
+    var item=data[i];
+    html+=
+      '<div class="idea-card" data-id="'+item.id+'" data-owner="'+owner+'">'+
+        '<div class="idea-text">'+escapeHtml(item.text)+'</div>'+
+        (item.note?'<div class="idea-note">'+escapeHtml(item.note)+'</div>':'')+
+        '<div class="idea-foot">'+
+          '<span class="idea-time">'+formatTime(item.createdAt)+(item.updatedAt&&item.updatedAt!==item.createdAt?' · 已编辑':'')+'</span>'+
+          '<button class="card-btn" data-act="edit">'+
+            '<svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>'+
+            '编辑'+
+          '</button>'+
+          '<button class="card-btn danger" data-act="delete">'+
+            '<svg viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>'+
+            '删除'+
+          '</button>'+
+        '</div>'+
+      '</div>';
+  }
+  list.innerHTML=html;
+}
+function renderAll(){renderSection('mine');renderSection('friend')}
+
+/* ========== Sheet Control ========== */
+function showOverlay(){overlay.classList.add('show')}
+function hideOverlay(){overlay.classList.remove('show')}
+function showSheet(el){showOverlay();el.classList.add('show')}
+function hideSheet(el){el.classList.remove('show');hideOverlay()}
+
+/* ========== Add / Edit ========== */
+function openAdd(owner){
+  editState={owner:owner,id:null,mode:'add'};
+  sheetTitle.textContent=owner==='mine'?'添加第一组想法':'添加第二组想法';
+  ideaInput.value='';
+  noteInput.value='';
+  ideaInput.placeholder='写下'+(owner==='mine'?'第一组':'第二组')+'的想法…';
+  showSheet(editSheet);
+  setTimeout(function(){ideaInput.focus()},350);
+}
+function openEdit(owner,id){
+  var data=appState.data[owner]||[];
+  var item=null;
+  for(var i=0;i<data.length;i++){if(data[i].id==id){item=data[i];break}}
+  if(!item)return;
+  editState={owner:owner,id:id,mode:'edit'};
+  sheetTitle.textContent='编辑想法';
+  ideaInput.value=item.text;
+  noteInput.value=item.note||'';
+  showSheet(editSheet);
+  setTimeout(function(){ideaInput.focus();autoResize(ideaInput)},350);
+}
+function saveIdea(){
+  var text=ideaInput.value.trim();
+  if(!text){
+    showToast('请输入想法内容');
+    ideaInput.focus();
+    return;
+  }
+  var note=noteInput.value.trim();
+  var owner=editState.owner;
+  var data=appState.data[owner]||[];
+  if(editState.mode==='add'){
+    data.unshift({
+      id:genId(),
+      text:text,
+      note:note,
+      createdAt:new Date().toISOString(),
+      updatedAt:new Date().toISOString()
+    });
+    showToast('已保存 · 同步中');
+  }else{
+    for(var i=0;i<data.length;i++){
+      if(data[i].id==editState.id){
+        data[i].text=text;
+        data[i].note=note;
+        data[i].updatedAt=new Date().toISOString();
+        break;
+      }
+    }
+    showToast('已更新 · 同步中');
+  }
+  appState.data[owner]=data;
+  appState.dirty=true;
+  renderSection(owner);
+  hideSheet(editSheet);
+  syncToServer();
+}
+
+/* ========== Delete ========== */
+function requestDelete(owner,id){
+  pendingConfirm={type:'delete',owner:owner,id:id};
+  $('#confirmMsg').textContent='确定删除这条想法吗？';
+  $('#confirmOk').textContent='删除';
+  showSheet(confirmSheet);
+}
+function doDelete(){
+  if(!pendingConfirm)return;
+  var owner=pendingConfirm.owner,id=pendingConfirm.id;
+  var data=appState.data[owner]||[];
+  var card=document.querySelector('.idea-card[data-id="'+id+'"][data-owner="'+owner+'"]');
+  if(card)card.classList.add('removing');
+
+  data=data.filter(function(i){return i.id!=id});
+  appState.data[owner]=data;
+  appState.dirty=true;
+
+  setTimeout(function(){renderSection(owner)},250);
+  pendingConfirm=null;
+  hideSheet(confirmSheet);
+  showToast('已删除 · 同步中');
+  syncToServer();
+}
+
+/* ========== Settings ========== */
+function openSettings(){showSheet(settingsSheet)}
+function exportData(){
+  var data={
+    mine:appState.data.mine||[],
+    friend:appState.data.friend||[],
+    exportDate:new Date().toISOString(),
+    version:1
+  };
+  var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;
+  var d=new Date();
+  var stamp=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  a.download='ideas-backup-'+stamp+'.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  hideSheet(settingsSheet);
+  showToast('备份已导出');
+}
+function importData(file){
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var data=JSON.parse(e.target.result);
+      appState.data.mine=data.mine||[];
+      appState.data.friend=data.friend||[];
+      appState.dirty=true;
+      appState.sha=null; // 导入后 sha 未知，让服务器处理
+      renderAll();
+      hideSheet(settingsSheet);
+      showToast('已导入 · 同步中');
+      syncToServer();
+    }catch(err){
+      showToast('文件格式错误');
+    }
+  };
+  reader.readAsText(file);
+}
+function clearAllData(){
+  pendingConfirm={type:'clear'};
+  $('#confirmMsg').textContent='确定清空所有想法吗？此操作不可恢复。';
+  $('#confirmOk').textContent='清空';
+  hideSheet(settingsSheet);
+  setTimeout(function(){showSheet(confirmSheet)},300);
+}
+function doClear(){
+  appState.data.mine=[];
+  appState.data.friend=[];
+  appState.dirty=true;
+  appState.sha=null;
+  renderAll();
+  pendingConfirm=null;
+  hideSheet(confirmSheet);
+  showToast('已清空 · 同步中');
+  syncToServer();
+}
+
+/* ========== Events ========== */
+// Add buttons
+document.querySelectorAll('.section-add').forEach(function(btn){
+  btn.addEventListener('click',function(){openAdd(this.getAttribute('data-owner'))});
+});
+// Card buttons
+function handleCardClick(e){
+  var btn=e.target.closest('.card-btn');
+  if(!btn)return;
+  var card=btn.closest('.idea-card');
+  if(!card)return;
+  var owner=card.getAttribute('data-owner');
+  var id=card.getAttribute('data-id');
+  var act=btn.getAttribute('data-act');
+  if(act==='edit')openEdit(owner,id);
+  else if(act==='delete')requestDelete(owner,id);
+}
+listMine.addEventListener('click',handleCardClick);
+listFriend.addEventListener('click',handleCardClick);
+// Card tap to edit
+function handleCardTap(e){
+  if(e.target.closest('.card-btn'))return;
+  var card=e.target.closest('.idea-card');
+  if(!card)return;
+  var owner=card.getAttribute('data-owner');
+  var id=card.getAttribute('data-id');
+  openEdit(owner,id);
+}
+listMine.addEventListener('click',handleCardTap);
+listFriend.addEventListener('click',handleCardTap);
+// Sheet buttons
+$('#btnCancel').addEventListener('click',function(){hideSheet(editSheet)});
+$('#btnSave').addEventListener('click',saveIdea);
+$('#settingsBtn').addEventListener('click',openSettings);
+$('#settingsClose').addEventListener('click',function(){hideSheet(settingsSheet)});
+$('#exportBtn').addEventListener('click',exportData);
+$('#importBtn').addEventListener('click',function(){fileInput.click()});
+$('#clearBtn').addEventListener('click',clearAllData);
+$('#confirmCancel').addEventListener('click',function(){pendingConfirm=null;hideSheet(confirmSheet)});
+$('#confirmOk').addEventListener('click',function(){
+  if(pendingConfirm&&pendingConfirm.type==='delete')doDelete();
+  else if(pendingConfirm&&pendingConfirm.type==='clear')doClear();
+});
+// File import
+fileInput.addEventListener('change',function(e){
+  if(e.target.files[0])importData(e.target.files[0]);
+  e.target.value='';
+});
+// Overlay
+overlay.addEventListener('click',function(){
+  hideSheet(editSheet);
+  hideSheet(settingsSheet);
+  hideSheet(confirmSheet);
+  pendingConfirm=null;
+});
+// Retry
+retryBtn.addEventListener('click',function(){doInitialLoad()});
+// Textarea
+ideaInput.addEventListener('input',function(){autoResize(this)});
+ideaInput.addEventListener('keydown',function(e){
+  if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){e.preventDefault();saveIdea()}
+});
+noteInput.addEventListener('keydown',function(e){
+  if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){e.preventDefault();saveIdea()}
+});
+// Prevent body scroll
+document.addEventListener('touchmove',function(e){
+  if(editSheet.classList.contains('show')||settingsSheet.classList.contains('show')||confirmSheet.classList.contains('show')){
+    if(!e.target.closest('.sheet'))e.preventDefault();
+  }
+},{passive:false});
+
+/* ========== Init ========== */
+doInitialLoad();
+
+})();
+</script>
+</body>
+</html>
